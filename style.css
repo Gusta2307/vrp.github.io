@@ -1,0 +1,148 @@
+
+/*--------------FIGURES-------------*/
+
+.client {
+    width: 50px;
+    height: 50px;
+    border-radius: 30px;
+    margin: 10px 10px;
+    cursor: pointer;
+    display: -webkit-flex;
+    display: -moz-flex;
+    position: relative;
+    /* animation: expand .6s ease-in-out; */
+}
+
+.truck {
+    width: 46px;
+    height: 46px;
+    border: 2px solid black;
+    border-radius: 10px;
+    margin: 10px 10px;
+    cursor: pointer;
+    display: block;
+    text-align: center;
+    position: relative;
+    /* animation: expand .6s ease-in-out; */
+}
+
+.listClient {
+    border-radius: 20px;
+
+    /* BROWSER DEFINITION */
+    display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box; /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox; /* TWEENER - IE 10 */
+    display: flexbox;
+}
+
+.box {
+    width: 280px;
+    height: 70px;
+    border-radius: 10px;
+    /* border: 2px solid black; */
+    margin-top: 10px;
+
+    /* BROWSER DEFINITION */
+    display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box; /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox; /* TWEENER - IE 10 */
+    display: -webkit-box; /* NEW - Chrome */
+
+    /* animation: append-animate .3s linear; */
+}
+
+
+#home {
+    padding-bottom: 10px;
+}
+
+body{
+    background-color: rgb(230, 211, 137);
+}
+
+.add {
+    width: 46px;
+    height: 46px;
+    opacity: 50%;
+    background-color: white;
+    border: 2px dashed black;
+
+    /* animation: appear .3s ease-in-out; */
+}
+
+/*---------------COLORS---------------*/
+.salmon {
+    background-color: #FF8C64;
+}
+
+.gray {
+    background-color: #7D6B7D;
+}
+
+.yellow {
+    background-color: #F2B705;
+}
+
+.light_blue {
+    background-color: #07B0F2;
+}
+
+.purple {
+    background-color: #AD84BF;
+}
+
+.pink {
+    background-color: #F2AB91;
+}
+
+/*---------------SHADOWS-------------*/
+
+.client:hover, .truck:hover {
+    box-shadow: 0 0 3px white;
+}
+
+/*--------------TEXT---------------*/
+
+.text {
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+/*-----------TRANSITIONS--------*/
+
+.box { /*BACKGROUND-COLOR*/
+    transition: all .6s ease-out;
+    -webkit-transition: all .6s ease-out;
+    -moz-transition: all .6s ease-out;
+    -o-transition: all .6s ease-out;
+}
+
+/*--------------ANIMATIONS-----------*/
+
+/* @keyframes appear {
+    from {
+      transform: scale(1);
+      opacity: 0;
+    }
+}
+
+@keyframes expand {
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+}
+
+@keyframes append-animate {
+	from {
+		transform: scale(0);
+		opacity: 0;
+	}
+	to {
+		transform: scale(1);
+		opacity: 1;	
+	}
+} */

@@ -14,7 +14,7 @@
     display: -webkit-flex;
     display: -moz-flex;
     position: relative;
-    animation: expand .6s ease-in-out;
+    animation: expand .6s ease-in;
 }
 
 .truck {

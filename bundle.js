@@ -1,6 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 let lib = require('@shopify/draggable');
-var leave, container;
+var leave, container, outContainer;
 
 const sortable = new lib.Sortable(document.querySelectorAll('.listClient'), {
     draggable: '.client',
@@ -17,16 +17,18 @@ sortable.on('drag:over:container', handlerOverContainer);
 
 function handlerOutContainer(e){
     leave = true;
-    e.overContainer.parentNode.style.width = e.overContainer.parentNode.getBoundingClientRect().width - 70 + "px";
+    outContainer = e.overContainer.parentNode;
 }
 
 function handlerOverContainer(e){
     if(leave && container !== e.overContainer.parentNode){
         e.overContainer.parentNode.style.width = e.overContainer.parentNode.getBoundingClientRect().width + 70 + "px";
+        outContainer.style.width = outContainer.getBoundingClientRect().width - 70 + "px";
         leave = false;
         container = null;
+        outContainer = null;
     }
-    else{
+    else {
         container = e.overContainer.parentNode;
     }
 }
@@ -37,32 +39,38 @@ const swappable = new lib.Swappable(document.querySelectorAll('.box'), {
     draggable: '.truck',
 });
 
+var startContainer, over, overContainer;
+
 swappable.on('swappable:start', start);
 swappable.on('swappable:swapped', swapped);
 swappable.on('swappable:stop', stop);
-swappable.on('sortable:sorted', sorted);
 
 function start(e){
-    console.log("start");
+    startContainer = e.data.dragEvent.data.sourceContainer;
 }
+
 
 function swapped(e){
-    let colorSwappedElement = e.swappedElement.classList[1];
-    let colorOriginalSource = e.dragEvent.data.source.classList[1];
-
-    e.swappedElement.parentNode.classList.remove(colorSwappedElement);
-    e.swappedElement.parentNode.classList.add(colorSwappedElement);
-
-    e.dragEvent.data.source.parentNode.classList.remove(colorSwappedElement);
-    e.dragEvent.data.source.parentNode.classList.add(colorOriginalSource);
-}
-
-function sorted(e){
-    console('sorted');
+    if(e.dragEvent.data.overContainer === e.dragEvent.data.sourceContainer){
+        over = overContainer = null;
+        return;
+    }
+    over = e.dragEvent.data.over;
+    overContainer = e.dragEvent.data.overContainer;
 }
 
 function stop(e){   
-    console.log("stop");
+    if(overContainer === null)
+        return;
+
+    let colorOverElement = over.classList[1];
+    let colorOriginalSource = e.data.dragEvent.data.originalSource.classList[1];
+
+    overContainer.classList.remove(colorOverElement);
+    overContainer.classList.add(colorOriginalSource);
+
+    e.dragEvent.data.sourceContainer.classList.remove(colorOriginalSource);
+    e.dragEvent.data.sourceContainer.classList.add(colorOverElement);
 }
 },{"@shopify/draggable":2}],2:[function(require,module,exports){
 (function webpackUniversalModuleDefinition(root, factory) {

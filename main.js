@@ -1,31 +1,48 @@
 let lib = require('@shopify/draggable');
+var leave, container;
 
-// new lib.Draggable(document.querySelectorAll('#drag'), {
-// 	draggable: '.client'
-// });
-
-// new lib.Sortable(document.querySelector('#listC'), {
-//     draggable: '.client'
-// });
-
-const droppable = new lib.Droppable(document.querySelectorAll('.box'), {
+const sortable = new lib.Sortable(document.querySelectorAll('.listClient'), {
     draggable: '.client',
-    dropzone: '.listClient'
-  });
+    swapAnimation: {
+        duration: 200,
+        easingFunction: 'ease-in-out',
+        horizontal: true
+    },
+    plugins: [lib.Plugins.SwapAnimation],
+});
 
-  droppable.on('droppable:dropped', () => console.log('droppable:dropped'));
-  droppable.on('droppable:returned', () => console.log('droppable:returned'));
+sortable.on('drag:out:container', handlerOutContainer);
+sortable.on('drag:over:container', handlerOverContainer);
 
-const swappable = new lib.Swappable(document.querySelectorAll('.truck'), {
-    draggable: '.truck'
+function handlerOutContainer(e){
+    leave = true;
+    e.overContainer.parentNode.style.width = e.overContainer.parentNode.getBoundingClientRect().width - 70 + "px";
+}
+
+function handlerOverContainer(e){
+    if(leave && container !== e.overContainer.parentNode){
+        e.overContainer.parentNode.style.width = e.overContainer.parentNode.getBoundingClientRect().width + 70 + "px";
+        leave = false;
+        container = null;
+    }
+    else{
+        container = e.overContainer.parentNode;
+    }
+}
+
+/*------------SWAPPABLE-----------*/
+
+const swappable = new lib.Swappable(document.querySelectorAll('.box'), {
+    draggable: '.truck',
 });
 
 swappable.on('swappable:start', start);
 swappable.on('swappable:swapped', swapped);
 swappable.on('swappable:stop', stop);
+swappable.on('sortable:sorted', sorted);
 
 function start(e){
-    console.log(e);
+    console.log("start");
 }
 
 function swapped(e){
@@ -39,13 +56,10 @@ function swapped(e){
     e.dragEvent.data.source.parentNode.classList.add(colorOriginalSource);
 }
 
+function sorted(e){
+    console('sorted');
+}
+
 function stop(e){   
-    console.log(e);
-    // console.log(swappable.containers[0].parentNode.classList);
-
-    // swappable.containers[0].parentNode.classList.remove(swappable.containers[0].classList[1]);
-    // swappable.containers[0].parentNode.classList.add(swappable.containers[1].classList[1]);
-
-    // swappable.containers[1].parentNode.classList.remove(swappable.containers[1].classList[1]);
-    // swappable.containers[1].parentNode.classList.add(swappable.containers[1].classList[1]);
+    console.log("stop");
 }

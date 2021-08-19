@@ -24,10 +24,11 @@ function handlerStart(e){
 }
 
 function handlerOutContainer(e){
+    console.log(e);
     leave = true;
     outContainer = e.overContainer.parentNode;
-    if(e.overContainer === startContainer)
-        addDiv(nextBro);
+    // if(e.overContainer === startContainer)
+    //     addDiv(nextBro);
 }
 
 function handlerOver(e){    
@@ -42,8 +43,14 @@ function handlerOver(e){
 }
 
 function handlerOverContainer(e){
-    if(containsNewDiv() && e.overContainer == startContainer)
-        removeNewDiv();
+    //console.log("over", e.overContainer.children);
+    if(containsNewDiv()){
+        if(e.overContainer == startContainer)
+            removeNewDiv();
+    }
+    else if(e.overContainer != startContainer)
+        addDiv(nextBro);
+    
     if(leave && outContainer.className != e.overContainer.parentNode.className){
         if(e.overContainer.style.width !== "")
         e.overContainer.style.width = '';

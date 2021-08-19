@@ -1,30 +1,61 @@
 let lib = require('@shopify/draggable');
-var leave, outContainer;
+var leave, outContainer, newDiv, startContainer, pos, auxPos;
 
 const sortable = new lib.Sortable(document.querySelectorAll('.listClient'), {
     draggable: '.client',
     swapAnimation: {
         duration: 200,
         easingFunction: 'ease-in-out',
-        horizontal: true
+        horizontal: true,
     },
     plugins: [lib.Plugins.SwapAnimation],
 });
 
+sortable.on('drag:start', handlerStart);
 sortable.on('drag:out:container', handlerOutContainer);
 sortable.on('drag:over:container', handlerOverContainer);
-sortable.on('drag:stop', end);
+sortable.on('drag:over', handlerOver);
+sortable.on('drag:stop', handlerStop);
 
-function end(e){
-    console.log("--------------end----------------");
+function handlerStart(e){
+    startContainer = e.sourceContainer;
+    newDiv = e.source.cloneNode(true);
+    pos = -1;
 }
 
 function handlerOutContainer(e){
     leave = true;
     outContainer = e.overContainer.parentNode;
+    // if(e.overContainer === startContainer)
+    //     addDiv();
+}
+
+function handlerOver(e){
+    if(pos == -1){
+        pos = getStart(startContainer);
+        auxPos = pos
+    }
+    else if(pos !== -1){
+        auxPos = getStart(startContainer);
+    }
+
+    if(e.sourceContainer === startContainer){
+        console.log("pos", pos, "auxPos", auxPos, Math.abs(pos - auxPos))
+        if(Math.abs(pos - auxPos) > 0){
+            addDiv();
+            startContainer.style.width = getWidth(startContainer.parentNode) + 'px';
+        }
+        else if(!containsNewDiv()){
+            startContainer.removeChild(newDiv);
+            startContainer.parentNode.style.width = getWidth(startContainer.parentNode) + 'px';
+        }
+    }
 }
 
 function handlerOverContainer(e){
+    // if(containsNewDiv() && Math.abs(pos - auxPos) > 1){
+    //     addDiv();
+    // }
     if(leave && outContainer.className != e.overContainer.parentNode.className){
         if(e.overContainer.style.width !== "")
         e.overContainer.style.width = '';
@@ -37,6 +68,12 @@ function handlerOverContainer(e){
         leave = false;
         outContainer = null;
     }
+}
+
+function handlerStop(e){
+    console.log("end");
+    startContainer.removeChild(newDiv);
+    startContainer.parentNode.style.width = getWidth(startContainer.parentNode) + 'px';
 }
 
 /*------------SWAPPABLE-----------*/
@@ -98,4 +135,31 @@ function outerWidth(element){
     width = element.offsetWidth, 
     margin = parseFloat(style.marginLeft) + parseFloat(style.marginRight);
     return width + margin;
+}
+
+function containsNewDiv(){
+    for(let item of startContainer.children){
+        if(item.classList.contains('add'))
+            return false;
+    }
+    return true;
+}
+
+function addDiv(){
+    newDiv.classList.add('add');
+    newDiv.innerHTML = "";
+    newDiv.style.hidden = 'true';
+    newDiv.style.position = 'relative';
+    startContainer.insertBefore(newDiv, startContainer.children[pos]);
+}
+
+function getStart(container){
+    let index = 0
+    for(let item of container.children){
+        if(item.classList.contains('draggable-source--is-dragging'))
+            return index;
+        else if(item.style.display === 'none')
+            continue;
+        index +=1;
+    }
 }

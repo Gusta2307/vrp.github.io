@@ -54,8 +54,8 @@ function handlerOverContainer(e){
         e.overContainer.parentNode.style.width = getWidth(e.overContainer.parentNode) + 70 + "px";
         outContainer.style.width = getWidth(outContainer) - 70 + "px";
         if(getWidth(outContainer) - 70 === 70){
-            outContainer.children[1].style.width = 30 + "px";
-            outContainer.style.width = 100 + "px";
+            outContainer.children[1].style.width = 15 + "px";
+            outContainer.style.width = getWidth(outContainer) + "px";
         }
         leave = false;
         outContainer = null;
@@ -155,7 +155,7 @@ function removeNewDiv(){
     startContainer.removeChild(newDiv);
     startContainer.parentNode.style.width = getWidth(startContainer.parentNode) + 'px';
     if(getWidth(startContainer.parentNode) === 70){
-        startContainer.parentNode.children[1].style.width = 30 + "px";
-        startContainer.parentNode.style.width = 100 + "px";
+        startContainer.parentNode.children[1].style.width = 15 + "px";
+        startContainer.parentNode.style.width = getWidth(startContainer.parentNode) + "px";
     }
 }

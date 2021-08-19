@@ -25,11 +25,8 @@ function handlerStart(e){
 }
 
 function handlerOutContainer(e){
-    console.log(e);
     leave = true;
     outContainer = e.overContainer.parentNode;
-    // if(e.overContainer === startContainer)
-    //     addDiv(nextBro);
 }
 
 function handlerOver(e){    
@@ -79,16 +76,10 @@ const swappable = new lib.Swappable(document.querySelectorAll('.box'), {
     draggable: '.truck',
 });
 
-var startContainer, over, overContainer;
+var over, overContainer;
 
-swappable.on('swappable:start', start);
 swappable.on('swappable:swapped', swapped);
 swappable.on('swappable:stop', stop);
-
-function start(e){
-    startContainer = e.data.dragEvent.data.sourceContainer;
-}
-
 
 function swapped(e){
     if(e.dragEvent.data.overContainer === e.dragEvent.data.sourceContainer){
@@ -164,6 +155,10 @@ function getStart(container){
 function removeNewDiv(){
     startContainer.removeChild(newDiv);
     startContainer.parentNode.style.width = getWidth(startContainer.parentNode) + 'px';
+    if(getWidth(startContainer.parentNode) === 70){
+        startContainer.parentNode.children[1].style.width = 30 + "px";
+        startContainer.parentNode.style.width = 100 + "px";
+    }
 }
 },{"@shopify/draggable":2}],2:[function(require,module,exports){
 (function webpackUniversalModuleDefinition(root, factory) {

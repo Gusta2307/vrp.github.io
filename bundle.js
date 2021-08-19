@@ -1,6 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 let lib = require('@shopify/draggable');
-var leave, container, outContainer;
+var leave, outContainer;
 
 const sortable = new lib.Sortable(document.querySelectorAll('.listClient'), {
     draggable: '.client',
@@ -14,6 +14,11 @@ const sortable = new lib.Sortable(document.querySelectorAll('.listClient'), {
 
 sortable.on('drag:out:container', handlerOutContainer);
 sortable.on('drag:over:container', handlerOverContainer);
+sortable.on('drag:stop', end);
+
+function end(e){
+    console.log("--------------end----------------");
+}
 
 function handlerOutContainer(e){
     leave = true;
@@ -21,15 +26,17 @@ function handlerOutContainer(e){
 }
 
 function handlerOverContainer(e){
-    if(leave && container !== e.overContainer.parentNode){
-        e.overContainer.parentNode.style.width = e.overContainer.parentNode.getBoundingClientRect().width + 70 + "px";
-        outContainer.style.width = outContainer.getBoundingClientRect().width - 70 + "px";
+    if(leave && outContainer.className != e.overContainer.parentNode.className){
+        if(e.overContainer.style.width !== "")
+        e.overContainer.style.width = '';
+        e.overContainer.parentNode.style.width = getWidth(e.overContainer.parentNode) + 70 + "px";
+        outContainer.style.width = getWidth(outContainer) - 70 + "px";
+        if(getWidth(outContainer) - 70 === 70){
+            outContainer.children[1].style.width = 30 + "px";
+            outContainer.style.width = 100 + "px";
+        }
         leave = false;
-        container = null;
         outContainer = null;
-    }
-    else {
-        container = e.overContainer.parentNode;
     }
 }
 
@@ -71,6 +78,27 @@ function stop(e){
 
     e.dragEvent.data.sourceContainer.classList.remove(colorOriginalSource);
     e.dragEvent.data.sourceContainer.classList.add(colorOverElement);
+}
+
+
+/*-------------UTILS------------------*/
+
+function getWidth(element){
+    let currentWidth = outerWidth(element.children[0]);
+    for(let child of element.children[1].children){
+        if(child.style.display === 'none' || child.classList.contains('draggable-mirror')){
+            continue;
+        }
+        currentWidth += outerWidth(child);
+    }
+    return currentWidth;
+}
+
+function outerWidth(element){
+    let style = element.currentStyle || window.getComputedStyle(element),
+    width = element.offsetWidth, 
+    margin = parseFloat(style.marginLeft) + parseFloat(style.marginRight);
+    return width + margin;
 }
 },{"@shopify/draggable":2}],2:[function(require,module,exports){
 (function webpackUniversalModuleDefinition(root, factory) {

@@ -16,6 +16,7 @@ sortable.on('drag:start', handlerStart);
 sortable.on('drag:out:container', handlerOutContainer);
 sortable.on('drag:over:container', handlerOverContainer);
 sortable.on('drag:over', handlerOver);
+sortable.on('mirror:attached', handlerMove);
 sortable.on('drag:stop', handlerStop);
 
 function handlerStart(e){
@@ -38,17 +39,31 @@ function handlerOver(e){
         else
             pos = startContainer.children.length > 0? startContainer.children.length - 1: 0;
     }
+    // else{
+    //     console.log("QQQ")
+    //     posDrag = getPos(e.overContainer, oMousePos(e.overContainer, e.sensorEvent.data));
+    //     swapPosDiv(posDrag, e.overContainer);
+    // }     
+}
+
+function handlerMove(e){
+    console.log("W");
+    // posDrag = getPos(e.sourceContainer, oMousePos(e.sourceContainer, e.sensorEvent.data));
+    // swapPosDiv(posDrag, e.sourceContainer);
+    //if(e.sourceContainer.children[e.sourceContainer.children.length - 1].classList.contains('draggable-source--is-dragging'))
+    //    console.log(e.sourceContainer.children);
 }
 
 function handlerOverContainer(e){
-    //console.log("over", e.overContainer.children);
     if(containsNewDiv()){
         if(e.overContainer == startContainer)
             removeNewDiv();
     }
-    else if(e.overContainer != startContainer)
+    else if(e.overContainer != startContainer){
         addDiv(nextBro);
-    
+    }
+
+
     if(leave && outContainer.className != e.overContainer.parentNode.className){
         if(e.overContainer.style.width !== "")
         e.overContainer.style.width = '';
@@ -61,6 +76,7 @@ function handlerOverContainer(e){
         leave = false;
         outContainer = null;
     }
+    swapPosDiv(e);
 }
 
 function handlerStop(e){
@@ -127,17 +143,15 @@ function outerWidth(element){
 
 function containsNewDiv(){
     for(let item of startContainer.children){
-        if(item.classList.contains('add'))
+        if(item.classList.contains('newDiv'))
             return true;
     }
     return false;
 }
 
 function addDiv(nextBro){
-    newDiv.classList.add('add');
-    newDiv.innerHTML = "";
-    newDiv.style.hidden = 'true';
-    newDiv.style.position = 'relative';
+    newDiv.classList.add('newDiv');
+    newDiv.style.opacity = '0.4';
     startContainer.insertBefore(newDiv, nextBro != null? nextBro: startContainer.children[0]);
 }
 
@@ -153,13 +167,53 @@ function getStart(container){
 }
 
 function removeNewDiv(){
-    startContainer.removeChild(newDiv);
-    startContainer.parentNode.style.width = getWidth(startContainer.parentNode) + 'px';
-    if(getWidth(startContainer.parentNode) === 70){
-        startContainer.parentNode.children[1].style.width = 15 + "px";
-        startContainer.parentNode.style.width = getWidth(startContainer.parentNode) + "px";
+    if(containsNewDiv()){
+        startContainer.removeChild(newDiv);
+        startContainer.parentNode.style.width = getWidth(startContainer.parentNode) + 'px';
+        if(getWidth(startContainer.parentNode) === 70){
+            startContainer.parentNode.children[1].style.width = 15 + "px";
+            startContainer.parentNode.style.width = getWidth(startContainer.parentNode) + "px";
+        }
     }
 }
+
+function getPos(enterBox, x){
+    if(x - 35 < 0)
+        return 0;
+    else if(x + 35 > enterBox.getBoundingClientRect().width)
+        return enterBox.children.length;
+    else {
+        for(let i = 1; i <= enterBox.children.length; i++){
+            if((x - 35)/70 < i)
+                return i;
+        }
+    }
+}
+
+function oMousePos(element, e) {
+    var clientRect = element.getBoundingClientRect();
+    return Math.round(e.clientX - clientRect.left);
+}
+
+function swapPosDiv(e){
+    posDrag = getPos(e.sourceContainer, oMousePos(e.sourceContainer, e.sensorEvent.data));
+    //console.log(container.children[container.children.length - 1]);
+    if(e.source.classList.contains('draggable-source--is-dragging')){
+        // let tempDiv = container.children[container.children.length - 1];
+        // container.children.remove(tempDiv);
+        console.log("hhhhh")
+        e.overContainer.insertBefore(e.source, e.overContainer.children[posDrag]);
+    }
+}
+
+function sleep(ms) {
+    var start = new Date().getTime();
+    for (var i = 0; i < 1e7; i++) {
+     if ((new Date().getTime() - start) > ms) {
+      break;
+     }
+    }
+   }
 },{"@shopify/draggable":2}],2:[function(require,module,exports){
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')

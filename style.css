@@ -1,6 +1,7 @@
 
 .draggable-source--is-dragging{
     opacity: 0.4;
+    text-indent: -9999px; 
 }
 
 /*--------------FIGURES-------------*/
@@ -118,10 +119,10 @@ body{
 /*-----------TRANSITIONS--------*/
 
 .box { /*BACKGROUND-COLOR*/
-    transition: all .6s ease-out;
-    -webkit-transition: all .6s ease-out;
-    -moz-transition: all .6s ease-out;
-    -o-transition: all .6s ease-out;
+    transition: all .3s ease-out;
+    -webkit-transition: all .3s ease-out;
+    -moz-transition: all .3s ease-out;
+    -o-transition: all .3s ease-out;
 }
 
 /*--------------ANIMATIONS-----------*/

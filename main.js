@@ -15,7 +15,6 @@ sortable.on('drag:start', handlerStart);
 sortable.on('drag:out:container', handlerOutContainer);
 sortable.on('drag:over:container', handlerOverContainer);
 sortable.on('drag:over', handlerOver);
-sortable.on('mirror:attached', handlerMove);
 sortable.on('drag:stop', handlerStop);
 
 function handlerStart(e){
@@ -37,20 +36,7 @@ function handlerOver(e){
         }
         else
             pos = startContainer.children.length > 0? startContainer.children.length - 1: 0;
-    }
-    // else{
-    //     console.log("QQQ")
-    //     posDrag = getPos(e.overContainer, oMousePos(e.overContainer, e.sensorEvent.data));
-    //     swapPosDiv(posDrag, e.overContainer);
-    // }     
-}
-
-function handlerMove(e){
-    console.log("W");
-    // posDrag = getPos(e.sourceContainer, oMousePos(e.sourceContainer, e.sensorEvent.data));
-    // swapPosDiv(posDrag, e.sourceContainer);
-    //if(e.sourceContainer.children[e.sourceContainer.children.length - 1].classList.contains('draggable-source--is-dragging'))
-    //    console.log(e.sourceContainer.children);
+    }   
 }
 
 function handlerOverContainer(e){
@@ -98,7 +84,8 @@ swappable.on('swappable:stop', stop);
 
 function swapped(e){
     if(e.dragEvent.data.overContainer === e.dragEvent.data.sourceContainer){
-        over = overContainer = null;
+        over = null;
+        overContainer = null;
         return;
     }
     over = e.dragEvent.data.over;
@@ -106,7 +93,7 @@ function swapped(e){
 }
 
 function stop(e){   
-    if(overContainer === null)
+    if(overContainer == null)
         return;
 
     let colorOverElement = over.classList[1];
@@ -117,6 +104,9 @@ function stop(e){
 
     e.dragEvent.data.sourceContainer.classList.remove(colorOriginalSource);
     e.dragEvent.data.sourceContainer.classList.add(colorOverElement);
+
+    over = null;
+    overContainer = null;
 }
 
 
@@ -196,20 +186,7 @@ function oMousePos(element, e) {
 
 function swapPosDiv(e){
     posDrag = getPos(e.sourceContainer, oMousePos(e.sourceContainer, e.sensorEvent.data));
-    //console.log(container.children[container.children.length - 1]);
     if(e.source.classList.contains('draggable-source--is-dragging')){
-        // let tempDiv = container.children[container.children.length - 1];
-        // container.children.remove(tempDiv);
-        console.log("hhhhh")
         e.overContainer.insertBefore(e.source, e.overContainer.children[posDrag]);
     }
 }
-
-function sleep(ms) {
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++) {
-     if ((new Date().getTime() - start) > ms) {
-      break;
-     }
-    }
-   }

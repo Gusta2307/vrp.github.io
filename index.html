@@ -8,30 +8,38 @@
     <link href="style.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-    <div class="box salmon">
-        <div id="sw" class="truck salmon"><span class="text">T1</span></div>
-        <div id="listC" class="listClient">
-            <div id="drag" class="client gray"><span class="text">C1</span></div>
-            <div id="drag" class="client gray"><span class="text">C2</span></div>
-            <div id="drag" class="client gray"><span class="text">C3</span></div>
+    <div id="home">
+        <div class="box salmon">
+            <div id="sw" class="truck salmon"><span class="text">T1</span></div>
+            <div id="listC" class="listClient">
+                <div id="drag" class="client gray"><span class="text">C1</span></div>
+                <div id="drag" class="client gray"><span class="text">C2</span></div>
+                <div id="drag" class="client gray"><span class="text">C3</span></div>
+            </div>
+        </div>
+        <div class="box yellow">
+            <div id="sw" class="truck yellow"><span class="text">T2</span></div>
+            <div id="listC" class="listClient">
+                <div id="drag" class="client light_blue"><span class="text">C1</span></div>
+                <div id="drag" class="client light_blue"><span class="text">C2</span></div>
+                <div id="drag" class="client light_blue"><span class="text">C3</span></div>
+            </div>
+        </div>
+        <div class="box purple">
+            <div id="sw" class="truck purple"><span class="text">T3</span></div>
+            <div id="listC" class="listClient">
+                <div id="drag" class="client pink"><span class="text">C1</span></div>
+                <div id="drag" class="client pink"><span class="text">C2</span></div>
+                <div id="drag" class="client pink"><span class="text">C3</span></div>
+            </div>
         </div>
     </div>
-    <div class="box yellow">
-        <div id="sw" class="truck yellow"><span class="text">T2</span></div>
-        <div id="listC" class="listClient">
-            <div id="drag" class="client light_blue"><span class="text">C1</span></div>
-            <div id="drag" class="client light_blue"><span class="text">C2</span></div>
-            <div id="drag" class="client light_blue"><span class="text">C3</span></div>
-        </div>
+    <div id="canvas">
+        <canvas id="my-canvas" width="600" height="500"></canvas>
     </div>
-    <div class="box purple">
-        <div id="sw" class="truck purple"><span class="text">T3</span></div>
-        <div id="listC" class="listClient">
-            <div id="drag" class="client pink"><span class="text">C1</span></div>
-            <div id="drag" class="client pink"><span class="text">C2</span></div>
-            <div id="drag" class="client pink"><span class="text">C3</span></div>
-        </div>
-    </div>
-    <script src="bundle.js"></script>
+    <script src="init_pos.js"></script>
+    <script type="module" src="bundle.js"></script>
+    <!-- <script type="module" src="main.js"></script> -->
+    <!-- <script type="module" src="script_canvas.js"></script> -->
 </body>
 </html>

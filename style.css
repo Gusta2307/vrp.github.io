@@ -60,10 +60,17 @@
 
 #home {
     padding-bottom: 10px;
+    width: 600px;
+}
+
+#canvas {
+    background-color: rgb(197, 193, 191);
+    border: 2px solid black;
 }
 
 body{
     background-color: rgb(230, 211, 137);
+    display: inline-flex;
 }
 
 .add {
@@ -114,6 +121,14 @@ body{
     top: 50%;
     position: absolute;
     transform: translate(-50%, -50%);
+}
+
+#p {
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
 }
 
 /*-----------TRANSITIONS--------*/

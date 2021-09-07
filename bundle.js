@@ -21,7 +21,6 @@ sortable.on('drag:over', handlerOver);
 sortable.on('drag:stop', handlerStop);
 sortable.on('drag:stopped', handlerEnd);
 
-sortable.on('draggable', gff);
 
 function handlerStart(e){
     startContainer = e.sourceContainer;
@@ -455,6 +454,14 @@ function drawClient(){
     }
 }
 
+function drawClientShadow(item){
+    let pos = getPosition(item.innerText);
+    ctx.beginPath();
+    ctx.arc(pos[0]*grid_size,-pos[1]*grid_size,11,0,2*Math.PI);
+    ctx.strokeStyle = 'red';
+    ctx.stroke();
+}
+
 function drawGasStation(){
     for(let i = 0; i<gasStation.length; i++){
         let pos = getPosition(gasStation[i].innerText);
@@ -478,11 +485,20 @@ function refresh(){
 }
 
 
+/* MOUSEOVER CLIENT */
 
+var clients = document.querySelectorAll('.client');
+[].forEach.call(clients, function(c){{
+    c.addEventListener('mouseover', handlerMouseOver, false);
+    c.addEventListener('mouseleave', handlerMouseLeave, false);
+}});
 
+function handlerMouseOver(e){
+    drawClientShadow(e.target);
+}
 
-function gff(e){
-    console.log("hola");
+function handlerMouseLeave(e){
+    refresh();
 }
 
 

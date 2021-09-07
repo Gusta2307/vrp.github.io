@@ -13,16 +13,22 @@ const sortable = new lib.Sortable(document.querySelectorAll('.listClient'), {
 });
 
 sortable.on('drag:start', handlerStart);
+sortable.on('drag:move', handlerMove);
 sortable.on('drag:out:container', handlerOutContainer);
 sortable.on('drag:over:container', handlerOverContainer);
 sortable.on('drag:over', handlerOver);
 sortable.on('drag:stop', handlerStop);
 sortable.on('drag:stopped', handlerEnd);
 
+
 function handlerStart(e){
     startContainer = e.sourceContainer;
     newDiv = e.source.cloneNode(true);
     pos = -1;
+}
+
+function handlerMove(e){
+    refresh();
 }
 
 function handlerOutContainer(e){
@@ -72,7 +78,7 @@ function handlerStop(e){
 }
 
 function handlerEnd(e){
-    refhesh();
+    refresh();
 }
 
 /*------------SWAPPABLE-----------*/
@@ -112,7 +118,7 @@ function stop(e){
     over = null;
     overContainer = null;
 
-    refhesh();
+    refresh();
 }
 
 
@@ -369,6 +375,11 @@ function getColor(c){
     return '#000000';
 }
 
+function skip(item){
+    return item.classList.contains('draggable--original') || item.classList.contains('draggable-mirror') || item.classList.contains('newDiv');
+    // item.classList.contains('draggable-source--is-dragging') || 
+}
+
 function arrow(context, fromx, fromy, tox, toy) {
     var headlen = 10;
     var dx = tox - fromx;
@@ -390,6 +401,9 @@ function drawArrow(){
             let prevPos = null;
             let posGasStation= null;
             for(let p of item.children){
+                if(skip(p))
+                    continue;
+
                 let pos = getPosition(p.innerText);
 
                 if(prevPos == null){
@@ -449,7 +463,7 @@ function drawGasStation(){
     }
 }
 
-function refhesh(){
+function refresh(){
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.strokeStyle = "#000000";
@@ -460,5 +474,6 @@ function refhesh(){
     drawClient();
     drawGasStation();
 }
+
 
 

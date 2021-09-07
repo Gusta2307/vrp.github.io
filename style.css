@@ -1,0 +1,174 @@
+
+.draggable-source--is-dragging{
+    opacity: 0.4;
+    text-indent: -9999px; 
+}
+
+/*--------------FIGURES-------------*/
+
+.client {
+    width: 50px;
+    height: 50px;
+    border-radius: 30px;
+    margin: 10px 10px;
+    cursor: pointer;
+    display: -webkit-flex;
+    display: -moz-flex;
+    position: relative;
+    animation: expand .6s ease-in;
+}
+
+.truck {
+    width: 46px;
+    height: 46px;
+    border: 2px solid black;
+    border-radius: 10px;
+    margin: 10px 10px;
+    cursor: pointer;
+    display: block;
+    text-align: center;
+    position: relative;
+    /* animation: expand .6s ease-in-out; */
+}
+
+.listClient {
+    border-radius: 20px;
+
+    /* BROWSER DEFINITION */
+    display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box; /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox; /* TWEENER - IE 10 */
+    display: flexbox;
+}
+
+.box {
+    width: 280px;
+    height: 70px;
+    border-radius: 10px;
+    /* border: 2px solid black; */
+    margin-top: 10px;
+
+    /* BROWSER DEFINITION */
+    display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6 */
+    display: -moz-box; /* OLD - Firefox 19- (buggy but mostly works) */
+    display: -ms-flexbox; /* TWEENER - IE 10 */
+    display: -webkit-box; /* NEW - Chrome */
+
+    /* animation: append-animate .3s linear; */
+}
+
+
+#home {
+    padding-bottom: 10px;
+    width: 600px;
+}
+
+#canvas {
+    background-color: rgb(197, 193, 191);
+    border: 2px solid black;
+    margin-left: 110px;
+}
+
+body{
+    background: rgb(238,174,202);
+    background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+    display: inline-flex;
+}
+
+.add {
+    width: 46px;
+    height: 46px;
+    opacity: 50%;
+    background-color: white;
+    border: 2px dashed black;
+
+    /* animation: appear .3s ease-in-out; */
+}
+
+.gas-station{
+    margin-top: -5px;
+}
+
+/*---------------COLORS---------------*/
+.salmon {
+    background-color: #FF8C64;
+}
+
+.gray {
+    background-color: #7D6B7D;
+}
+
+.yellow {
+    background-color: #F2B705;
+}
+
+.light_blue {
+    background-color: #07B0F2;
+}
+
+.purple {
+    background-color: #AD84BF;
+}
+
+.pink {
+    background-color: #F2AB91;
+}
+
+/*---------------SHADOWS-------------*/
+
+.client:hover, .truck:hover {
+    box-shadow: 0 0 3px white;
+}
+
+/*--------------TEXT---------------*/
+
+.text {
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+}
+
+#p {
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+}
+
+/*-----------TRANSITIONS--------*/
+
+.box { /*BACKGROUND-COLOR*/
+    transition: all .3s ease-out;
+    -webkit-transition: all .3s ease-out;
+    -moz-transition: all .3s ease-out;
+    -o-transition: all .3s ease-out;
+}
+
+/*--------------ANIMATIONS-----------*/
+
+/* @keyframes appear {
+    from {
+      transform: scale(1);
+      opacity: 0;
+    }
+}
+
+@keyframes expand {
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+}
+
+@keyframes append-animate {
+	from {
+		transform: scale(0);
+		opacity: 0;
+	}
+	to {
+		transform: scale(1);
+		opacity: 1;	
+	}
+} */

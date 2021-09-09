@@ -15,15 +15,27 @@ var canvas_height = canvas.height;
 var num_lines_x = Math.floor(canvas_height/grid_size);
 var num_lines_y = Math.floor(canvas_width/grid_size);
 
-var point = document.querySelectorAll('p');
-var prevPos = null;
-var prevParentColor = null;
+var list = document.getElementsByClassName('listClient');
+var gasStation = document.getElementsByClassName('gas-station');
 
-//refhesh();
+var clientRadius = 10;
+
+for(let item of list){
+    let p = document.createElement('p');
+    p.className = "gas-station";
+    p.innerText = getPos(-9, 9);
+    item.parentNode.appendChild(p);
+    for(let child of item.children){
+        p = document.createElement('p');
+        p.id = "p";
+        p.innerText = getPos(-9, 9);
+        child.insertBefore(p, child.children[0]);
+    }
+}
 
 function drawCoorAxis(){
     // Draw grid lines along X-axis
-    for(var i=0; i<=num_lines_x; i++) {
+    for(var i=1; i<=num_lines_x -1; i++) {
         ctx.beginPath();
         ctx.lineWidth = 1;
 
@@ -45,7 +57,7 @@ function drawCoorAxis(){
     }
 
     // Draw grid lines along Y-axis
-    for(i=0; i<=num_lines_y; i++) {
+    for(i=1; i<=num_lines_y -1; i++) {
         ctx.beginPath();
         ctx.lineWidth = 1;
 
@@ -140,51 +152,7 @@ function drawCoorAxis(){
     }
 }
 
-/*-------------------------------------------------------------------*/
-
-
-drawArrow(point);
-drawClient(point);
-
-// for(let p of point){
-//     let color = getColor(p.parentNode.classList[1]);
-//     let parentColor = getColor(p.parentNode.parentNode.parentNode.classList[1]);
-//     let pos = getPos(p.innerText);
-//     let text = p.parentNode.children[1].innerHTML;
-
-//     if(prevPos == null)
-//         prevPos = pos;
-    
-//     if(parentColor == null)
-//         prevParentColor = parentColor;
-
-//     if(prevPos != pos && parentColor === prevParentColor){
-//         ctx.beginPath();
-//         ctx.strokeStyle = parentColor;
-//         arrow(ctx, prevPos[0]*grid_size, -prevPos[1]*grid_size, pos[0]*grid_size, -pos[1]*grid_size);
-//         ctx.stroke();
-//         prevPos = pos;
-//     }
-//     else{
-//         prevParentColor = parentColor;
-//         prevPos = pos;
-//     }
-    
-//     ctx.beginPath();
-//     ctx.arc(pos[0]*grid_size,-pos[1]*grid_size,10,0,2*Math.PI);
-//     ctx.fillStyle = color;
-//     ctx.fill();
-
-//     ctx.beginPath();
-//     ctx.font = '10px Arial';
-//     ctx.fillStyle = '#000000';
-//     ctx.fillText(text, pos[0]*grid_size - 6,-pos[1]*grid_size + 4);
-//     ctx.fill();
-
-
-// }
-
-function getPos(text){
+function getPosition(text){
     let pos = text.split(',');
     return [parseInt(pos[0].replace('(', ''), 10), parseInt(pos[1].replace(')', ''), 10)];
 }
@@ -207,8 +175,19 @@ function getColor(c){
     return '#000000';
 }
 
+function skip(item){
+    return item.classList.contains('draggable--original') || item.classList.contains('draggable-mirror') || item.classList.contains('newDiv');
+    // item.classList.contains('draggable-source--is-dragging') || 
+}
+
+function getPos(min, max){
+    let x = Math.floor(Math.random() * (max-min)) + min;
+    let y = Math.floor(Math.random() * (max-min)) + min;
+    return `(${x},${y})`;
+}
+
 function arrow(context, fromx, fromy, tox, toy) {
-    var headlen = 10; // length of head in pixels
+    var headlen = 10;
     var dx = tox - fromx;
     var dy = toy - fromy;
     var angle = Math.atan2(dy, dx);
@@ -221,73 +200,101 @@ function arrow(context, fromx, fromy, tox, toy) {
 }
 
 function drawArrow(){
-    for(let p of point){
-        let parentColor = getColor(p.parentNode.parentNode.parentNode.classList[1]);
-        let pos = getPos(p.innerText);
-    
-        if(prevPos == null)
-            prevPos = pos;
-        
-        if(parentColor == null)
-            prevParentColor = parentColor;
-    
-        if(prevPos != pos && parentColor === prevParentColor){
+    let index = 0;
+    for(let item of list){
+        if(item.children.length > 0){
+            let parentColor = getColor(item.parentNode.classList[item.parentNode.classList.length - 1]);
+            let prevPos = null;
+            let posGasStation= null;
+            for(let p of item.children){
+                if(skip(p))
+                    continue;
+
+                let pos = getPosition(p.innerText);
+
+                if(prevPos == null){
+                    prevPos = pos;
+                    posGasStation = getPosition(gasStation[index].innerText);
+                    ctx.beginPath();
+                    ctx.strokeStyle = parentColor;
+                    arrow(ctx, posGasStation[0]*grid_size, -posGasStation[1]*grid_size, pos[0]*grid_size, -pos[1]*grid_size);
+                    ctx.stroke();
+                }
+            
+                if(prevPos != pos){
+                    ctx.beginPath();
+                    ctx.strokeStyle = parentColor;
+                    arrow(ctx, prevPos[0]*grid_size, -prevPos[1]*grid_size, pos[0]*grid_size, -pos[1]*grid_size);
+                    ctx.stroke();
+                    prevPos = pos;
+                }
+            }
             ctx.beginPath();
             ctx.strokeStyle = parentColor;
-            arrow(ctx, prevPos[0]*grid_size, -prevPos[1]*grid_size, pos[0]*grid_size, -pos[1]*grid_size);
+            arrow(ctx, posGasStation[0]*grid_size, -posGasStation[1]*grid_size, prevPos[0]*grid_size, -prevPos[1]*grid_size);
             ctx.stroke();
-            prevPos = pos;
         }
-        else{
-            prevParentColor = parentColor;
-            prevPos = pos;
-        }
+        index++;
     }
 }
 
 function drawClient(){
-    for(let p of point){
-        let color = getColor(p.parentNode.classList[1]);
-        let pos = getPos(p.innerText);
-        let text = p.parentNode.children[1].innerHTML;
+    for(let item of list){
+        for(let p of item.children){
+            let color = getColor(p.classList[1]);
+            let pos = getPosition(p.innerText);
+            let text = p.children[1].innerHTML;
 
+            ctx.beginPath();
+            ctx.arc(pos[0]*grid_size,-pos[1]*grid_size,clientRadius,0,2*Math.PI);
+            ctx.fillStyle = color;
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.font = '10px Arial';
+            ctx.fillStyle = '#000000';
+            ctx.fillText(text, pos[0]*grid_size - 6,-pos[1]*grid_size + 4);
+            ctx.fill();
+        }
+    }
+}
+
+function drawClientShadow(item){
+    if(item.classList.contains('client')){
+        let pos = getPosition(item.querySelector('p').innerHTML);
         ctx.beginPath();
         ctx.arc(pos[0]*grid_size,-pos[1]*grid_size,10,0,2*Math.PI);
-        ctx.fillStyle = color;
-        ctx.fill();
+        ctx.strokeStyle = 'red';
+        ctx.stroke();
+    }
+}
 
+function drawGasStation(){
+    for(let i = 0; i<gasStation.length; i++){
+        let pos = getPosition(gasStation[i].innerText);
         ctx.beginPath();
-        ctx.font = '10px Arial';
-        ctx.fillStyle = '#000000';
-        ctx.fillText(text, pos[0]*grid_size - 6,-pos[1]*grid_size + 4);
+        ctx.fillStyle = getColor(gasStation[i].parentNode.classList[gasStation[i].parentNode.classList.length - 1]);
+        ctx.rect(pos[0]*grid_size - 10, -pos[1]*grid_size - 10, 20, 20);
         ctx.fill();
     }
 }
 
-// module.exports = {
-//     refhesh: function (){
-//     ctx.setTransform(1, 0, 0, 1, 0, 0);
-//     ctx.clearRect(0, 0, canvas.width, canvas.height);
-//     drawCoorAxis();
-//     prevPos = null;
-//     prevParentColor = null;
-//     point = document.querySelectorAll('p');
-//     drawArrow(point);
-//     drawClient(point);
-//     return 0;
-//     }
-// }
-
-function refhesh(){
+function refresh(){
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = "#000000";
+    ctx.fillStyle = "#000000";
     drawCoorAxis();
-    prevPos = null;
-    prevParentColor = null;
-    point = document.querySelectorAll('p');
-    drawArrow(point);
-    drawClient(point);
-    return 0;
+    list = document.getElementsByClassName('listClient');
+    drawArrow();
+    drawClient();
+    drawGasStation();
 }
 
-export{ refhesh };
+drawCoorAxis();
+drawArrow();
+drawClient();
+drawGasStation();
+
+module.exports = {refresh, drawClientShadow, canvas_width, canvas_height, grid_size, clientRadius, getPosition};
+  

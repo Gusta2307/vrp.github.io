@@ -1,5 +1,9 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 
+let cvs = require("./script_canvas");
+console.log(cvs);
+
+
 let lib = require('@shopify/draggable');
 var leave, outContainer, newDiv, startContainer, nextBro, pos;
 
@@ -29,7 +33,7 @@ function handlerStart(e){
 }
 
 function handlerMove(e){
-    refresh();
+    cvs.refresh();
 }
 
 function handlerOutContainer(e){
@@ -79,7 +83,7 @@ function handlerStop(e){
 }
 
 function handlerEnd(e){
-    refresh();
+    cvs.refresh();
 }
 
 /*------------SWAPPABLE-----------*/
@@ -119,7 +123,7 @@ function stop(e){
     over = null;
     overContainer = null;
 
-    refresh();
+    cvs.refresh();
 }
 
 
@@ -204,8 +208,58 @@ function swapPosDiv(e){
     }
 }
 
-/*--------------CANVAS----------------------------------*/
+/* MOUSEOVER CLIENT */
 
+var clients = document.querySelectorAll('.client');
+[].forEach.call(clients, function(c){{
+    c.addEventListener('mouseover', handlerMouseOver, false);
+    c.addEventListener('mouseleave', handlerMouseLeave, false);
+}});
+
+function handlerMouseOver(e){
+    cvs.drawClientShadow(e.target);
+}
+
+function handlerMouseLeave(e){
+    cvs.refresh();
+}
+
+/*  CANVAS EVENTS    */
+var canvas = document.querySelectorAll('.canvas');
+[].forEach.call(canvas, function(c){{
+    c.addEventListener('mousemove', handlerCanvasMouseOver, false);
+    c.addEventListener('mouseleave', handlerCanvasMouseLeave, false);
+}});
+
+var activeClient = null;
+
+function isActive(pos, x, y){
+    return Math.sqrt((x - pos[0])**2 + (y - pos[1])**2) <= 0.42;
+}
+
+function handlerCanvasMouseOver(e){
+    var x = (e.offsetX/cvs.canvas_width * cvs.grid_size - cvs.grid_size/2) * 0.963;
+    var y =  -1*(e.offsetY/cvs.canvas_height * cvs.grid_size - cvs.grid_size/2) * 0.8;
+
+    let client = document.querySelectorAll('.client');
+    for(let c of client){
+        let pos = cvs.getPosition(c.querySelector('p').innerHTML);
+        if(isActive(pos, x,y)){
+            c.style.boxShadow = '0 0 5px white';
+            activeClient = c;
+        }
+    }
+    if(activeClient && !isActive(cvs.getPosition(activeClient.querySelector('p').innerHTML), x, y))
+        activeClient.style.boxShadow = '';
+
+    document.querySelector('.txt').innerHTML = `X: ${x}   Y: ${y}`;
+}
+
+function handlerCanvasMouseLeave(e){
+    document.querySelector('.txt').innerHTML = `X: ${-1}   Y: ${-1}`;
+}
+
+},{"./script_canvas":2,"@shopify/draggable":3}],2:[function(require,module,exports){
 var grid_size = 25;
 
 var x_axis_starting_point = { number: 1, suffix: '\u03a0' };
@@ -226,9 +280,24 @@ var num_lines_y = Math.floor(canvas_width/grid_size);
 var list = document.getElementsByClassName('listClient');
 var gasStation = document.getElementsByClassName('gas-station');
 
+var clientRadius = 10;
+
+for(let item of list){
+    let p = document.createElement('p');
+    p.className = "gas-station";
+    p.innerText = getPos(-9, 9);
+    item.parentNode.appendChild(p);
+    for(let child of item.children){
+        p = document.createElement('p');
+        p.id = "p";
+        p.innerText = getPos(-9, 9);
+        child.insertBefore(p, child.children[0]);
+    }
+}
+
 function drawCoorAxis(){
     // Draw grid lines along X-axis
-    for(var i=0; i<=num_lines_x; i++) {
+    for(var i=1; i<=num_lines_x -1; i++) {
         ctx.beginPath();
         ctx.lineWidth = 1;
 
@@ -250,7 +319,7 @@ function drawCoorAxis(){
     }
 
     // Draw grid lines along Y-axis
-    for(i=0; i<=num_lines_y; i++) {
+    for(i=1; i<=num_lines_y -1; i++) {
         ctx.beginPath();
         ctx.lineWidth = 1;
 
@@ -345,14 +414,6 @@ function drawCoorAxis(){
     }
 }
 
-/*-------------------------------------------------------------------*/
-
-
-drawCoorAxis();
-drawArrow();
-drawClient();
-drawGasStation();
-
 function getPosition(text){
     let pos = text.split(',');
     return [parseInt(pos[0].replace('(', ''), 10), parseInt(pos[1].replace(')', ''), 10)];
@@ -379,6 +440,12 @@ function getColor(c){
 function skip(item){
     return item.classList.contains('draggable--original') || item.classList.contains('draggable-mirror') || item.classList.contains('newDiv');
     // item.classList.contains('draggable-source--is-dragging') || 
+}
+
+function getPos(min, max){
+    let x = Math.floor(Math.random() * (max-min)) + min;
+    let y = Math.floor(Math.random() * (max-min)) + min;
+    return `(${x},${y})`;
 }
 
 function arrow(context, fromx, fromy, tox, toy) {
@@ -441,7 +508,7 @@ function drawClient(){
             let text = p.children[1].innerHTML;
 
             ctx.beginPath();
-            ctx.arc(pos[0]*grid_size,-pos[1]*grid_size,10,0,2*Math.PI);
+            ctx.arc(pos[0]*grid_size,-pos[1]*grid_size,clientRadius,0,2*Math.PI);
             ctx.fillStyle = color;
             ctx.fill();
 
@@ -455,11 +522,13 @@ function drawClient(){
 }
 
 function drawClientShadow(item){
-    let pos = getPosition(item.innerText);
-    ctx.beginPath();
-    ctx.arc(pos[0]*grid_size,-pos[1]*grid_size,11,0,2*Math.PI);
-    ctx.strokeStyle = 'red';
-    ctx.stroke();
+    if(item.classList.contains('client')){
+        let pos = getPosition(item.querySelector('p').innerHTML);
+        ctx.beginPath();
+        ctx.arc(pos[0]*grid_size,-pos[1]*grid_size,10,0,2*Math.PI);
+        ctx.strokeStyle = 'red';
+        ctx.stroke();
+    }
 }
 
 function drawGasStation(){
@@ -484,25 +553,15 @@ function refresh(){
     drawGasStation();
 }
 
+drawCoorAxis();
+drawArrow();
+drawClient();
+drawGasStation();
 
-/* MOUSEOVER CLIENT */
+module.exports = {refresh, drawClientShadow, canvas_width, canvas_height, grid_size, clientRadius, getPosition};
+  
 
-var clients = document.querySelectorAll('.client');
-[].forEach.call(clients, function(c){{
-    c.addEventListener('mouseover', handlerMouseOver, false);
-    c.addEventListener('mouseleave', handlerMouseLeave, false);
-}});
-
-function handlerMouseOver(e){
-    drawClientShadow(e.target);
-}
-
-function handlerMouseLeave(e){
-    refresh();
-}
-
-
-},{"@shopify/draggable":2}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();

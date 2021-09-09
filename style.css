@@ -64,9 +64,12 @@
 }
 
 #canvas {
+    display: flex;
     background-color: rgb(197, 193, 191);
-    border: 2px solid black;
+    /* border: 2px solid black; */
     margin-left: 110px;
+    border-radius: 20px;
+    box-shadow: 0 0.2rem 1rem;
 }
 
 body{
